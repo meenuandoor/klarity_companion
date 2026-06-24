@@ -1,0 +1,970 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body><title>Companion Guide — Lessons From Last Time</title>
+
+<style>
+  :root{
+    /* host CRM — quiet, cool neutrals */
+    --canvas:#eef1f6; --surface:#ffffff; --surface-2:#f7f9fc;
+    --ink:#1b2230; --ink-2:#37425a; --muted:#5b6675; --faint:#8a93a3;
+    --line:#e2e7ef; --line-2:#eef1f6;
+    --crm:#4f46e5; --crm-soft:#eef0fe;
+    /* Companion identity */
+    --c-blue:#1d4ed8; --c-orange:#f97316; --c-primary:#2563eb;
+    --teal:#3a9fb4; --teal-deep:#2f8597;
+    /* semantic */
+    --warn:#f59e0b; --warn-ink:#b45309; --warn-soft:#fff7ec;
+    --ok:#15a249; --ok-soft:#effaf2;
+    /* taxonomy chips */
+    --amber-bg:#fef3c7; --amber-ink:#92400e;
+    --indigo-bg:#e0e7ff; --indigo-ink:#3730a3;
+    --purple-bg:#f3e8ff; --purple-ink:#6b21a8;
+
+    --r-sm:8px; --r-md:11px; --r-lg:16px;
+    --sh-xs:0 1px 2px rgb(16 24 40 / .05);
+    --sh-sm:0 1px 3px rgb(16 24 40 / .08), 0 1px 2px rgb(16 24 40 / .04);
+    --sh-md:0 8px 20px rgb(16 24 40 / .10), 0 2px 6px rgb(16 24 40 / .05);
+    --sh-lg:0 24px 60px rgb(16 24 40 / .22), 0 8px 18px rgb(16 24 40 / .10);
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--canvas);
+    font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  button{font:inherit; color:inherit; cursor:pointer;}
+  h1,h2,h3,h4{margin:0; font-weight:600; text-wrap:balance;}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums;}
+  .eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--faint);
+  }
+
+  /* ===================== App shell ===================== */
+  .app{display:flex; height:100vh; width:100vw;}
+
+  /* CRM nav rail */
+  .rail{
+    width:60px; flex-shrink:0; background:#0f1424; color:#aeb6c8;
+    display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 0;
+  }
+  .rail-logo{
+    width:34px; height:34px; border-radius:9px; background:var(--crm); color:#fff;
+    display:grid; place-items:center; font-weight:800; font-size:15px; letter-spacing:-.02em;
+    margin-bottom:10px;
+  }
+  .rail-btn{
+    width:40px; height:40px; border:none; background:transparent; border-radius:10px;
+    display:grid; place-items:center; color:inherit; transition:background .15s,color .15s;
+  }
+  .rail-btn svg{width:19px; height:19px;}
+  .rail-btn:hover{background:#1c2336; color:#e6eaf2;}
+  .rail-btn.active{background:#1c2336; color:#fff; box-shadow:inset 2px 0 0 var(--crm);}
+  .rail-spacer{flex:1;}
+  .rail-ava{
+    width:32px; height:32px; border-radius:50%; background:#2a3350; color:#dfe5f1;
+    display:grid; place-items:center; font-size:12px; font-weight:600;
+  }
+
+  /* CRM workspace */
+  .workspace{flex:1; min-width:0; display:flex; flex-direction:column;}
+
+  .topbar{
+    height:56px; flex-shrink:0; background:var(--surface); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:14px; padding:0 22px;
+  }
+  .brand{font-weight:700; letter-spacing:.02em; font-size:15px;}
+  .crumb{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13px;}
+  .crumb svg{width:14px; height:14px; opacity:.6;}
+  .topbar-spacer{flex:1;}
+  .top-search{
+    display:flex; align-items:center; gap:8px; height:34px; padding:0 12px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:9px;
+    color:var(--faint); width:220px; font-size:13px;
+  }
+  .top-search svg{width:15px; height:15px;}
+  .top-ico{
+    width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--surface);
+    display:grid; place-items:center; color:var(--muted);
+  }
+  .top-ico svg{width:16px; height:16px;}
+
+  .scroll{flex:1; min-height:0; overflow-y:auto;}
+  .page{max-width:920px; margin:0 auto; padding:28px 32px 60px;}
+
+  .page-head{display:flex; align-items:flex-start; gap:16px; margin-bottom:22px;}
+  .ph-main{flex:1; min-width:0;}
+  .ph-main h1{font-size:23px; letter-spacing:-.01em;}
+  .ph-sub{display:flex; align-items:center; gap:10px; margin-top:7px; color:var(--muted); font-size:13px;}
+  .ph-sub .dot{width:3px;height:3px;border-radius:50%;background:var(--faint);}
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 11px;
+    border-radius:999px; font-size:12px; font-weight:600; border:1px solid transparent;
+  }
+  .pill .led{width:7px; height:7px; border-radius:50%;}
+  .pill-progress{background:#fff7ec; color:var(--warn-ink); border-color:#fde6bf;}
+  .pill-progress .led{background:var(--warn); box-shadow:0 0 0 3px rgb(245 158 11 / .18);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px; height:36px; padding:0 14px;
+    border-radius:9px; font-size:13px; font-weight:600; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink-2); transition:background .15s,border-color .15s,box-shadow .15s,transform .1s;
+  }
+  .btn svg{width:15px; height:15px;}
+  .btn:hover{background:var(--surface-2); border-color:#d3dae6;}
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--crm); border-color:var(--crm); color:#fff;}
+  .btn-primary:hover{background:#4338ca; border-color:#4338ca;}
+
+  .grid{display:grid; grid-template-columns:1.35fr 1fr; gap:20px; align-items:start;}
+  @media (max-width:880px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+    box-shadow:var(--sh-xs);
+  }
+  .card-head{padding:16px 18px; border-bottom:1px solid var(--line-2); display:flex; align-items:center; gap:10px;}
+  .card-head h2{font-size:15px;}
+  .card-head .count{margin-left:auto; font-size:12px; color:var(--faint);}
+  .card-body{padding:18px;}
+
+  /* form */
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block; font-size:12px; font-weight:600; color:var(--ink-2); margin-bottom:6px;}
+  .control{
+    width:100%; height:38px; padding:0 12px; border:1px solid var(--line); border-radius:9px;
+    background:var(--surface-2); color:var(--ink); font:inherit; font-size:13.5px;
+  }
+  .control:focus-visible{outline:none; border-color:var(--crm); box-shadow:0 0 0 3px rgb(79 70 229 / .15); background:#fff;}
+  textarea.control{height:auto; min-height:74px; padding:10px 12px; resize:vertical; line-height:1.5;}
+  select.control{appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b6675' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; padding-right:34px;}
+  .inline-flag{display:inline-flex; align-items:center; gap:6px; margin-top:7px; font-size:11.5px; font-weight:600;}
+  .inline-flag svg{width:13px; height:13px;}
+  .flag-warn{color:var(--warn-ink);}
+  .flag-ok{color:var(--ok);}
+
+  /* checklist */
+  .steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  .step{
+    display:flex; align-items:center; gap:12px; padding:12px 4px;
+    border-bottom:1px solid var(--line-2);
+  }
+  .step:last-child{border-bottom:none;}
+  .step-box{
+    width:22px; height:22px; border-radius:7px; flex-shrink:0; border:1.5px solid #cdd4e0;
+    display:grid; place-items:center; background:#fff; color:#fff;
+  }
+  .step-box svg{width:13px; height:13px;}
+  .step.done .step-box{background:var(--ok); border-color:var(--ok);}
+  .step.active .step-box{border-color:var(--crm); border-style:solid;}
+  .step.active .step-box::after{content:""; width:8px;height:8px;border-radius:2px;background:var(--crm);}
+  .step-label{flex:1; font-size:13.5px; font-weight:500;}
+  .step.done .step-label{color:var(--muted);}
+  .step-tag{font-size:11px; font-weight:600; color:var(--faint);}
+  .step.active .step-tag{color:var(--crm);}
+
+  /* ===================== Companion bar ===================== */
+  .companion-bar{
+    position:fixed; right:22px; bottom:24px; z-index:60; width:380px;
+    background:#111827; border:1px solid rgba(255,255,255,.09); border-radius:18px;
+    box-shadow:0 24px 64px rgba(0,0,0,.55), 0 4px 14px rgba(0,0,0,.35);
+    overflow:visible; transition:right .32s cubic-bezier(.4,0,.2,1);
+  }
+
+  .cbar-hd{
+    display:flex; align-items:center; gap:9px; padding:12px 14px 11px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .cbar-hd-ico{width:15px; height:15px; color:rgba(255,255,255,.38); flex-shrink:0;}
+  .cbar-domain{font-size:12px; color:rgba(255,255,255,.5); font-weight:500; flex:1;}
+  .cbar-hd-btn{
+    width:28px; height:28px; border:none; background:transparent; border-radius:7px;
+    color:rgba(255,255,255,.4); display:grid; place-items:center;
+    transition:background .15s, color .15s;
+  }
+  .cbar-hd-btn svg{width:15px; height:15px;}
+  .cbar-hd-btn:hover{background:rgba(255,255,255,.08); color:rgba(255,255,255,.8);}
+
+  .cbar-controls{
+    display:flex; align-items:center; gap:8px; padding:10px 12px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .cbar-ask-outer{flex:1; padding:1.5px; border-radius:12px; background:linear-gradient(135deg,#7c3aed,#db2777,#f97316);}
+  .cbar-ask-inner{
+    display:flex; align-items:center; gap:8px; background:#1a2038;
+    border-radius:10.5px; padding:9px 11px;
+  }
+  .cbar-ask-placeholder{flex:1; font-size:14px; color:rgba(255,255,255,.35); font-family:var(--sans);}
+  .cbar-ask-mic{border:none; background:transparent; color:rgba(255,255,255,.35); display:grid; place-items:center; padding:0; cursor:pointer;}
+  .cbar-ask-mic svg{width:15px; height:15px;}
+  .cbar-ctrl{
+    width:44px; height:44px; border:none; border-radius:12px; flex-shrink:0;
+    background:rgba(255,255,255,.08); color:rgba(255,255,255,.55);
+    display:grid; place-items:center; transition:background .15s, color .15s; cursor:pointer;
+  }
+  .cbar-ctrl svg{width:18px; height:18px;}
+  .cbar-ctrl:hover{background:rgba(255,255,255,.14); color:rgba(255,255,255,.9);}
+  .cbar-ctrl-screen{background:#4f46e5; color:#fff;}
+  .cbar-ctrl-screen:hover{background:#4338ca;}
+
+  .cbar-spf{
+    display:flex; align-items:center; gap:8px; width:100%; padding:10px 14px 8px;
+    border:none; background:transparent; text-align:left; cursor:pointer;
+    border-radius:0;
+    max-height:0; overflow:hidden; opacity:0; pointer-events:none;
+    transition:max-height .4s cubic-bezier(.4,0,.2,1), opacity .35s ease, background .15s;
+  }
+  .cbar-spf:hover{background:rgba(255,255,255,.04);}
+  .app.spf-visible .cbar-spf{max-height:60px; opacity:1; pointer-events:auto;}
+  .cbar-spf-ico{width:13px; height:13px; color:rgba(255,255,255,.3); flex-shrink:0;}
+  .cbar-spf-label{
+    font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:rgba(255,255,255,.38);
+  }
+  .cbar-match-badge{
+    display:inline-flex; align-items:center; height:20px; padding:0 8px; border-radius:999px;
+    background:rgba(74,222,128,.15); color:#4ade80; font-size:10.5px; font-weight:700;
+  }
+  .cbar-chev{
+    margin-left:auto; width:16px; height:16px; color:rgba(255,255,255,.3); flex-shrink:0;
+    transition:transform .22s cubic-bezier(.4,0,.2,1);
+  }
+  .app.panel-open .cbar-chev{transform:rotate(180deg);}
+
+  .cbar-process{
+    padding:1px 14px 13px; font-size:15px; font-weight:600; color:#fff; letter-spacing:-.01em;
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height .4s cubic-bezier(.4,0,.2,1) .08s, opacity .35s ease .08s;
+  }
+  .app.spf-visible .cbar-process{max-height:40px; opacity:1;}
+
+  .notif-badge{
+    position:absolute; top:-6px; right:-6px;
+    width:20px; height:20px; border-radius:50%;
+    background:#ef4444; color:#fff;
+    font-size:11px; font-weight:700; line-height:20px; text-align:center;
+    border:2.5px solid var(--canvas);
+    opacity:0; transform:scale(0.6);
+    transition:opacity .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
+    pointer-events:none; z-index:1;
+  }
+  .notif-badge.visible{opacity:1; transform:scale(1);}
+
+  /* collapsible similar section in panel */
+  .similar-toggle{cursor:pointer; user-select:none;}
+  .similar-toggle .section-chev{
+    margin-left:auto; width:14px; height:14px; color:var(--faint);
+    transition:transform .2s; flex-shrink:0;
+  }
+  .section-label{display:flex; align-items:center; gap:7px;}
+  .section.collapsed .similar-toggle .section-chev{transform:rotate(-90deg);}
+  .section.collapsed .similar-body{display:none;}
+  /* ===== Companion Guide — inline expansion ===== */
+  .cbar-content{
+    overflow:hidden; max-height:0;
+    transition:max-height .36s cubic-bezier(.4,0,.2,1);
+    border-top:0px solid rgba(255,255,255,.09);
+  }
+  .app.panel-open .cbar-content{
+    max-height:530px;
+    border-top-width:1px;
+  }
+  .cbar-guide-hd{
+    display:flex; align-items:center; gap:11px; padding:13px 16px 12px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .cbar-guide-body{
+    overflow-y:auto; padding:14px 14px 4px;
+  }
+  .app.panel-open .cbar-guide-body{
+    max-height:380px;
+  }
+  .mark{
+    width:36px; height:36px; border-radius:10px; flex-shrink:0;
+    background:linear-gradient(145deg,var(--c-blue),var(--c-orange));
+    display:grid; place-items:center; color:#fff; box-shadow:0 4px 12px rgb(29 78 216 / .28);
+  }
+  .mark svg{width:19px; height:19px;}
+  .ico-btn{
+    width:32px; height:32px; border-radius:8px; border:none; background:transparent; color:var(--muted);
+    display:grid; place-items:center; transition:background .15s, color .15s; position:relative;
+  }
+  .ico-btn svg{width:17px; height:17px;}
+  .ico-btn:hover{background:var(--surface-2); color:var(--ink);}
+
+  .menu-wrap{position:relative; display:flex;}
+  .menu{
+    position:absolute; top:38px; right:0; width:184px; background:#fff; border:1px solid var(--line);
+    border-radius:11px; box-shadow:var(--sh-md); padding:5px; z-index:5; display:none;
+  }
+  .menu.open{display:block;}
+  .menu button{
+    width:100%; display:flex; align-items:center; gap:9px; padding:9px 10px; border:none; background:none;
+    border-radius:7px; font-size:13px; color:var(--ink-2); text-align:left;
+  }
+  .menu button svg{width:15px; height:15px; color:var(--muted);}
+  .menu button:hover{background:var(--surface-2);}
+  .section{margin-bottom:24px;}
+  .section:last-child{margin-bottom:8px;}
+  .section-label{display:flex; align-items:center; gap:7px; margin-bottom:11px;}
+  .section-label svg{width:13px; height:13px; color:var(--faint);}
+
+  /* similar process */
+  .similar{
+    border:1px solid #c9dcff; border-radius:14px; padding:15px;
+    background:linear-gradient(180deg,#f3f7ff,#ffffff);
+  }
+  .similar-top{display:flex; align-items:center; gap:9px; margin-bottom:11px;}
+  .similar-top .badge-ok{
+    display:inline-flex; align-items:center; gap:5px; height:22px; padding:0 9px; border-radius:999px;
+    background:var(--ok-soft); color:var(--ok); font-size:11px; font-weight:700;
+  }
+  .similar-top .badge-ok svg{width:12px; height:12px;}
+  .similar h3{font-size:16.5px; letter-spacing:-.01em; margin-bottom:10px;}
+  .similar-meta{display:flex; gap:18px; margin-bottom:14px;}
+  .smeta .k{font-size:11px; color:var(--faint); display:flex; align-items:center; gap:5px;}
+  .smeta .k svg{width:12px; height:12px;}
+  .smeta .v{font-size:14px; font-weight:600; margin-top:3px;}
+  .similar-actions{display:flex; gap:9px;}
+  .similar-actions .btn{flex:1; height:38px;}
+  .similar-feedback{
+    margin-top:10px; padding-top:10px;
+    border-top:1px solid rgba(255,255,255,.07);
+  }
+  .similar-notrel{
+    display:flex; align-items:center; gap:5px; width:100%;
+    border:none; background:transparent; cursor:pointer; padding:3px 0;
+    font-size:11.5px; color:rgba(255,255,255,.3);
+    transition:color .15s;
+  }
+  .similar-notrel svg{width:11px; height:11px; flex-shrink:0;}
+  .similar-notrel:hover{color:rgba(255,255,255,.55);}
+  .similar-dismissed{
+    display:none; align-items:center; gap:6px;
+    font-size:11.5px; color:rgba(255,255,255,.35); padding:3px 0;
+  }
+  .similar-dismissed svg{width:12px; height:12px; color:rgba(74,222,128,.6); flex-shrink:0;}
+  .similar-dismissed .undo{
+    margin-left:4px; border:none; background:transparent; cursor:pointer;
+    font-size:11.5px; color:#60a5fa; padding:0; text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  .similar.dismissed-match .similar-notrel{display:none;}
+  .similar.dismissed-match .similar-dismissed{display:flex;}
+  .btn-companion{
+    background:linear-gradient(135deg,var(--c-blue),var(--c-primary)); border:none; color:#fff;
+  }
+  .btn-companion:hover{filter:brightness(1.06); background:linear-gradient(135deg,var(--c-blue),var(--c-primary));}
+
+  /* watch-for lessons */
+  .lesson{
+    position:relative; border:1px solid var(--line); border-radius:13px; background:#fff;
+    box-shadow:var(--sh-xs); padding:13px 14px 13px 16px; margin-bottom:11px; overflow:hidden;
+  }
+  .lesson::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--warn);}
+  .lesson-top{display:flex; align-items:flex-start; gap:9px;}
+  .lesson-ico{
+    width:24px; height:24px; border-radius:7px; flex-shrink:0; display:grid; place-items:center;
+    background:var(--warn-soft); color:var(--warn-ink);
+  }
+  .lesson-ico svg{width:14px; height:14px;}
+  .lesson h4{font-size:13.5px; margin-bottom:3px;}
+  .lesson p{margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.5;}
+  .lesson-foot{display:flex; align-items:center; gap:8px; margin-top:11px; padding-left:33px; flex-wrap:wrap;}
+  .chip{white-space:nowrap;}
+  .chip{
+    display:inline-flex; align-items:center; height:21px; padding:0 9px; border-radius:6px;
+    font-size:11px; font-weight:600; letter-spacing:.01em;
+  }
+  .chip-amber{background:var(--amber-bg); color:var(--amber-ink);}
+  .chip-indigo{background:var(--indigo-bg); color:var(--indigo-ink);}
+  .chip-purple{background:var(--purple-bg); color:var(--purple-ink);}
+  .src{font-size:11px; color:var(--faint);}
+  .notrel{
+    margin-left:auto; border:none; background:none; color:var(--faint); font-size:11.5px; font-weight:600;
+    display:inline-flex; align-items:center; gap:4px; padding:3px 5px; border-radius:6px; white-space:nowrap;
+  }
+  .notrel svg{width:12px; height:12px;}
+  .notrel:hover{background:var(--surface-2); color:var(--muted);}
+  /* dismissed state */
+  .lesson.dismissed{padding:11px 14px;}
+  .lesson.dismissed::before{background:var(--line);}
+  .lesson.dismissed .lesson-top, .lesson.dismissed .lesson-foot{display:none;}
+  .dismiss-row{display:none; align-items:center; gap:8px; font-size:12px; color:var(--muted);}
+  .lesson.dismissed .dismiss-row{display:flex;}
+  .dismiss-row svg{width:14px; height:14px; color:var(--faint);}
+  .dismiss-row .undo{margin-left:auto; border:none; background:none; color:var(--c-primary); font-weight:600; font-size:12px;}
+  .dismiss-row .undo:hover{text-decoration:underline;}
+
+  /* artifacts */
+  .artifact{
+    display:flex; align-items:center; gap:11px; width:100%; text-align:left;
+    border:1px solid var(--line); border-radius:11px; background:#fff; padding:11px 12px;
+    box-shadow:var(--sh-xs); margin-bottom:9px; transition:border-color .15s, box-shadow .15s, transform .1s;
+  }
+  .artifact:hover{border-color:#c9dcff; box-shadow:var(--sh-sm);}
+  .artifact:active{transform:translateY(1px);}
+  .art-ico{width:36px; height:36px; border-radius:9px; flex-shrink:0; display:grid; place-items:center;}
+  .art-ico svg{width:17px; height:17px;}
+  .art-doc{background:#eef0fe; color:var(--crm);}
+  .art-dia{background:#e7f6f3; color:#0f766e;}
+  .art-sum{background:#fdeee7; color:#c2410c;}
+  .art-txt{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;}
+  .art-name{font-size:13px; font-weight:600;}
+  .art-meta{font-size:11.5px; color:var(--faint); margin-top:1px;}
+  .artifact > svg.chev{width:16px; height:16px; color:var(--faint); flex-shrink:0;}
+
+
+  .panel-foot{
+    flex-shrink:0; border-top:1px solid var(--line); padding:11px 16px;
+    display:flex; align-items:center; gap:8px; font-size:11px; color:var(--faint);
+  }
+  .panel-foot svg{width:13px; height:13px; flex-shrink:0;}
+
+  /* empty state */
+  .empty{display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; height:100%; padding:40px 30px; gap:6px;}
+  .empty-ico{width:60px; height:60px; border-radius:17px; background:var(--surface-2); color:var(--faint); display:grid; place-items:center; margin-bottom:8px;}
+  .empty-ico svg{width:28px; height:28px;}
+  .empty h3{font-size:16px;}
+  .empty p{margin:0; max-width:240px; color:var(--muted); font-size:13px; line-height:1.55;}
+  .app.empty-mode .cbar-guide-body{display:none;}
+  .app.empty-mode .cbar-content .empty{display:flex;}
+
+  /* ===================== Modal ===================== */
+  .overlay{
+    position:fixed; inset:0; z-index:80; background:rgb(16 24 40 / .5); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center; padding:26px;
+    opacity:0; pointer-events:none; transition:opacity .2s;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .modal{
+    width:100%; max-width:680px; max-height:88vh; background:var(--surface); border-radius:var(--r-lg);
+    box-shadow:var(--sh-lg); display:flex; flex-direction:column; overflow:hidden;
+    transform:translateY(10px) scale(.99); transition:transform .2s;
+  }
+  .overlay.open .modal{transform:none;}
+  .modal-head{padding:20px 22px; border-bottom:1px solid var(--line); display:flex; align-items:flex-start; gap:13px;}
+  .modal-head .mark{width:38px;height:38px;}
+  .modal-head h2{font-size:17px;}
+  .modal-head .mh-sub{display:flex; align-items:center; gap:8px; margin-top:4px; font-size:12.5px; color:var(--muted);}
+  .modal-head .mh-sub svg{width:13px;height:13px;}
+  .modal-head .mh-sub .dot{width:3px;height:3px;border-radius:50%;background:var(--faint);}
+  .modal-close{margin-left:auto;}
+  .modal-body{padding:22px; overflow-y:auto;}
+  .modal-section{margin-bottom:22px;}
+  .modal-section:last-child{margin-bottom:0;}
+  .ms-summary{font-size:14px; color:var(--ink-2); line-height:1.6; margin:0;}
+
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:11px; margin-top:13px;}
+  @media (max-width:560px){ .stats{grid-template-columns:repeat(2,1fr);} }
+  .stat{border:1px solid var(--line); border-radius:12px; padding:13px 14px; background:var(--surface-2);}
+  .stat .k{font-size:11px; color:var(--faint); display:flex; align-items:center; gap:5px;}
+  .stat .k svg{width:13px;height:13px;}
+  .stat .v{font-size:20px; font-weight:700; margin-top:6px; letter-spacing:-.01em;}
+  .stat .v small{font-size:12px; font-weight:600; color:var(--muted);}
+  .stat.io .v{font-size:14px; font-weight:600;}
+  .stat.rework .v{color:var(--warn-ink);}
+
+  .msig{border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:11px;}
+  .msig:last-child{margin-bottom:0;}
+  .msig-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .msig-top h4{font-size:14px;}
+  .msig p{margin:7px 0 0; font-size:12.5px; color:var(--ink-2); line-height:1.55;}
+  .msig .act{display:flex; gap:7px; margin-top:10px; padding:9px 11px; background:#f3f7ff; border:1px solid #dbe6ff; border-radius:9px; font-size:12.5px; color:var(--ink-2);}
+  .msig .act svg{width:14px; height:14px; color:var(--c-primary); flex-shrink:0; margin-top:1px;}
+  .art-list-modal{display:flex; flex-direction:column; gap:9px;}
+
+  .divider{height:1px; background:var(--line); margin:0 0 22px;}
+  h3.mh{font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--faint); font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:7px;}
+  h3.mh svg{width:14px; height:14px;}
+
+  :focus-visible{outline:2px solid var(--c-primary); outline-offset:2px; border-radius:4px;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important; animation:none !important;}
+  }
+  @media (max-width:720px){
+    .companion-bar{width:calc(100vw - 44px);}
+  }
+
+  /* ===== Guide panel — dark theme ===== */
+  .cbar-content{color:#f0f4ff;}
+  .cbar-guide-hd{
+    background:linear-gradient(180deg,rgba(37,99,235,.12),rgba(17,24,39,0)) !important;
+    background-color:#111827 !important;
+    border-bottom-color:rgba(255,255,255,.09);
+  }
+  .cbar-guide-hd h2{color:#fff;}
+  .cbar-guide-hd .sub{color:rgba(255,255,255,.48);}
+  .cbar-content .ico-btn{color:rgba(255,255,255,.4);}
+  .cbar-content .ico-btn:hover{background:rgba(255,255,255,.08); color:rgba(255,255,255,.85);}
+  .cbar-content .menu{background:#1c2540; border-color:rgba(255,255,255,.1);}
+  .cbar-content .menu button{color:rgba(255,255,255,.72);}
+  .cbar-content .menu button svg{color:rgba(255,255,255,.38);}
+  .cbar-content .menu button:hover{background:rgba(255,255,255,.07);}
+
+  .cbar-content .section-label{color:rgba(255,255,255,.4);}
+  .cbar-content .section-label svg{color:rgba(255,255,255,.28);}
+  .cbar-content .similar-toggle:hover{background:rgba(255,255,255,.04); border-radius:8px;}
+
+  .cbar-content .similar{
+    border-color:rgba(99,162,255,.18);
+    background:linear-gradient(180deg,rgba(37,99,235,.1),rgba(37,99,235,.03));
+  }
+  .cbar-content .similar h3{color:#fff;}
+  .cbar-content .smeta .k{color:rgba(255,255,255,.4);}
+  .cbar-content .smeta .v{color:#fff;}
+  .cbar-content .similar-top .badge-ok{background:rgba(74,222,128,.15); color:#4ade80;}
+  .cbar-content .similar-actions .btn{
+    background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12); color:rgba(255,255,255,.78);
+  }
+  .cbar-content .similar-actions .btn:hover{background:rgba(255,255,255,.12);}
+  .cbar-content .btn-companion{background:linear-gradient(135deg,#3b82f6,#6366f1); border-color:transparent; color:#fff;}
+  .cbar-content .btn-companion:hover{filter:brightness(1.1);}
+
+  .cbar-content .lesson{background:#1a2335; border-color:rgba(255,255,255,.08);}
+  .cbar-content .lesson h4{color:#fff;}
+  .cbar-content .lesson p{color:rgba(255,255,255,.6);}
+  .cbar-content .lesson-ico{background:rgba(245,158,11,.15); color:#fbbf24;}
+  .cbar-content .src{color:rgba(255,255,255,.3);}
+  .cbar-content .chip-amber{background:rgba(251,191,36,.15); color:#fbbf24;}
+  .cbar-content .chip-indigo{background:rgba(129,140,248,.15); color:#a5b4fc;}
+  .cbar-content .chip-purple{background:rgba(196,181,253,.15); color:#c4b5fd;}
+  .cbar-content .notrel{color:rgba(255,255,255,.3);}
+  .cbar-content .notrel:hover{background:rgba(255,255,255,.07); color:rgba(255,255,255,.55);}
+  .cbar-content .notrel svg{color:rgba(255,255,255,.3);}
+  .cbar-content .dismiss-row{color:rgba(255,255,255,.38);}
+  .cbar-content .dismiss-row svg{color:rgba(255,255,255,.28);}
+  .cbar-content .dismiss-row .undo{color:#60a5fa;}
+  .cbar-content .lesson.dismissed::before{background:rgba(255,255,255,.14);}
+
+  .cbar-content .panel-foot{border-top-color:rgba(255,255,255,.08); color:rgba(255,255,255,.3);}
+  .cbar-content .panel-foot svg{color:rgba(255,255,255,.22);}
+
+  .cbar-content .empty h3{color:#fff;}
+  .cbar-content .empty p{color:rgba(255,255,255,.42);}
+  .cbar-content .empty-ico{background:rgba(255,255,255,.06); color:rgba(255,255,255,.28);}
+
+  .similar-toggle .section-chev{color:rgba(255,255,255,.35);}
+</style>
+
+<div class="app" id="app">
+
+  <!-- ===== CRM nav rail ===== -->
+  <nav class="rail" aria-label="CRM navigation">
+    <div class="rail-logo" title="Apex CRM">A</div>
+    <button class="rail-btn active" title="Customers" aria-label="Customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+    <button class="rail-btn" title="Pipeline" aria-label="Pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></button>
+    <button class="rail-btn" title="Tasks" aria-label="Tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m18 9 3 3-3 3"/></svg></button>
+    <button class="rail-btn" title="Reports" aria-label="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></button>
+    <div class="rail-spacer"></div>
+    <div class="rail-ava" title="Jordan Reyes">JR</div>
+  </nav>
+
+  <!-- ===== CRM workspace ===== -->
+  <div class="workspace">
+    <header class="topbar">
+      <span class="brand">CRM</span>
+      <span class="crumb">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        Customers
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        Acme Corp
+      </span>
+      <div class="topbar-spacer"></div>
+      <div class="top-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Search customers</div>
+      <div class="top-ico" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+    </header>
+
+    <div class="scroll">
+      <div class="page">
+        <div class="page-head">
+          <div class="ph-main">
+            <h1>Customer Onboarding</h1>
+            <div class="ph-sub">
+              <strong style="color:var(--ink-2);font-weight:600;">Acme Corp</strong>
+              <span class="dot"></span>
+              <span class="mono">ACC-4821</span>
+              <span class="dot"></span>
+              Account owner: Jordan Reyes
+            </div>
+          </div>
+          <span class="pill pill-progress"><span class="led"></span> In Progress</span>
+        </div>
+
+        <div class="grid">
+          <!-- form -->
+          <section class="card">
+            <div class="card-head"><h2>Onboarding details</h2></div>
+            <div class="card-body">
+              <div class="field">
+                <label for="f-owner">Account owner</label>
+                <input id="f-owner" class="control" value="Jordan Reyes" />
+              </div>
+              <div class="field">
+                <label for="f-sync">CRM sync status</label>
+                <select id="f-sync" class="control">
+                  <option>Not started</option>
+                  <option selected>Pending validation</option>
+                  <option>Synced</option>
+                </select>
+                <span class="inline-flag flag-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Awaiting permission mapping</span>
+              </div>
+              <div class="field">
+                <label for="f-perm">Permission mapping</label>
+                <select id="f-perm" class="control">
+                  <option selected>Default role template</option>
+                  <option>Custom mapping</option>
+                  <option>Verified mapping</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-ws">Customer workspace</label>
+                <input id="f-ws" class="control" placeholder="Not provisioned yet" />
+              </div>
+              <div class="field">
+                <label for="f-notes">Implementation notes</label>
+                <textarea id="f-notes" class="control" placeholder="Add context for this onboarding…">Kickoff complete. Awaiting permission mapping sign-off before CRM sync.</textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- checklist -->
+          <section class="card">
+            <div class="card-head"><h2>Onboarding steps</h2><span class="count mono">1 / 5</span></div>
+            <div class="card-body" style="padding:8px 18px;">
+              <ol class="steps">
+                <li class="step done">
+                  <span class="step-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                  <span class="step-label">Create customer account</span>
+                  <span class="step-tag">Done</span>
+                </li>
+                <li class="step active">
+                  <span class="step-box"></span>
+                  <span class="step-label">Configure permissions</span>
+                  <span class="step-tag">In progress</span>
+                </li>
+                <li class="step">
+                  <span class="step-box"></span>
+                  <span class="step-label">Import contacts</span>
+                </li>
+                <li class="step">
+                  <span class="step-box"></span>
+                  <span class="step-label">Validate CRM sync</span>
+                </li>
+                <li class="step">
+                  <span class="step-box"></span>
+                  <span class="step-label">Send onboarding summary</span>
+                </li>
+              </ol>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Companion bar ===== -->
+  <div class="companion-bar" id="companionBar" role="complementary" aria-label="Companion">
+
+    <div class="cbar-hd">
+      <svg class="cbar-hd-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/></svg>
+      <span class="cbar-domain">architect.klarity.ai</span>
+      <button class="cbar-hd-btn" title="Microphone" aria-label="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
+    </div>
+
+    <div class="cbar-controls">
+      <div class="cbar-ask-outer">
+        <div class="cbar-ask-inner">
+          <span class="cbar-ask-placeholder">Ask</span>
+          <button class="cbar-ask-mic" aria-label="Voice input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button>
+        </div>
+      </div>
+      <button class="cbar-ctrl cbar-ctrl-screen" title="Screen share" aria-label="Screen share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></button>
+      <button class="cbar-ctrl" title="Microphone" aria-label="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></button>
+      <button class="cbar-ctrl" title="Pause" aria-label="Pause"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></button>
+    </div>
+
+    <button class="cbar-spf" id="cbarToggle" aria-expanded="false" aria-label="Toggle Companion Guide">
+      <svg class="cbar-spf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+      <span class="cbar-spf-label">Similar Process Found</span>
+      <span class="cbar-match-badge">Match</span>
+      <svg class="cbar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="cbar-process">Customer Onboarding</div>
+
+    <div class="cbar-content" id="cbarContent">
+
+      <!-- guide head row -->
+      <div class="cbar-guide-hd">
+        <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></div>
+        <div class="title">
+          <h2 style="font-size:14px;font-weight:600;color:#fff;line-height:1.2;">Companion Guide</h2>
+          <div class="sub" style="font-size:11.5px;color:rgba(255,255,255,.48);margin-top:1px;">Lessons From Last Time</div>
+        </div>
+        <div style="flex:1"></div>
+        <div class="menu-wrap">
+          <button class="ico-btn" id="menuBtn" aria-label="Options" aria-haspopup="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+          <div class="menu" id="menu">
+            <button id="toggleEmpty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/></svg> <span id="emptyLabel">Show empty state</span></button>
+          </div>
+        </div>
+        <button class="ico-btn" id="collapseBtn" aria-label="Collapse" title="Collapse">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- scrollable guide body -->
+      <div class="cbar-guide-body" id="panelBody">
+
+        <!-- Section 1: Similar Process Found -->
+        <section class="section" id="similarSection">
+          <div class="section-label eyebrow similar-toggle" id="similarToggle" role="button" tabindex="0" aria-expanded="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+            Similar Process Found
+            <svg class="section-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+          <div class="similar-body">
+          <div class="similar">
+            <div class="similar-top">
+              <span class="badge-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Match</span>
+            </div>
+            <h3>Customer Onboarding</h3>
+            <div class="similar-meta">
+              <div class="smeta">
+                <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/></svg> Completed</div>
+                <div class="v">18 days ago</div>
+              </div>
+              <div class="smeta">
+                <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Duration</div>
+                <div class="v mono">34 min</div>
+              </div>
+            </div>
+            <div class="similar-actions">
+              <button class="btn" id="viewWorkflow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                View Workflow
+              </button>
+            </div>
+            <div class="similar-feedback" id="similarFeedback">
+              <button class="similar-notrel" id="similarNotrel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                Process is not relevant
+              </button>
+              <div class="similar-dismissed" id="similarDismissed">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Marked as not relevant
+                <button class="undo" id="similarUndo">Undo</button>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Things to Watch For -->
+        <section class="section">
+          <div class="section-label eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Things to Watch For</div>
+
+          <div class="lesson" data-lesson>
+            <div class="lesson-top">
+              <span class="lesson-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+              <div><h4>Missing documentation</h4><p>Required onboarding instructions were difficult to locate last time.</p></div>
+            </div>
+            <div class="lesson-foot">
+              <span class="src">Source</span><span class="chip chip-amber">Knowledge: Documentation</span>
+              <button class="notrel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> Not relevant</button>
+            </div>
+            <div class="dismiss-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Marked not relevant <button class="undo">Undo</button></div>
+          </div>
+
+          <div class="lesson" data-lesson>
+            <div class="lesson-top">
+              <span class="lesson-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></span>
+              <div><h4>CRM rework detected</h4><p>CRM configuration step was repeated 3 times.</p></div>
+            </div>
+            <div class="lesson-foot">
+              <span class="src">Source</span><span class="chip chip-indigo">Process Observation</span>
+              <button class="notrel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> Not relevant</button>
+            </div>
+            <div class="dismiss-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Marked not relevant <button class="undo">Undo</button></div>
+          </div>
+
+          <div class="lesson" data-lesson>
+            <div class="lesson-top">
+              <span class="lesson-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z"/></svg></span>
+              <div><h4>Permission mapping issue</h4><p>Manual correction was required before sync succeeded.</p></div>
+            </div>
+            <div class="lesson-foot">
+              <span class="src">Source</span><span class="chip chip-purple">Tooling: Configuration</span>
+              <button class="notrel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> Not relevant</button>
+            </div>
+            <div class="dismiss-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Marked not relevant <button class="undo">Undo</button></div>
+          </div>
+        </section>
+
+      </div><!-- /cbar-guide-body -->
+
+      <!-- empty state -->
+      <div class="empty">
+        <span class="empty-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></span>
+        <h3>No related sessions yet</h3>
+        <p>Keep Companion running to build your personal process history.</p>
+      </div>
+
+    </div><!-- /cbar-content -->
+
+    <span class="notif-badge" id="notifBadge" aria-label="1 new insight">1</span>
+  </div>
+
+
+  <!-- ===== View Workflow modal ===== -->
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></div>
+        <div>
+          <h2 id="modalTitle">Customer Onboarding</h2>
+          <div class="mh-sub">
+            <span>Your previous session</span><span class="dot"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> 18 days ago
+            <span class="dot"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg> Opens in Klarity Companion
+          </div>
+        </div>
+        <button class="ico-btn modal-close" id="modalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="modal-section">
+          <h3 class="mh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></svg> Process Summary</h3>
+          <p class="ms-summary">A five-step onboarding to provision a new customer workspace and validate CRM sync. Most of the elapsed time was spent re-running CRM configuration after permission-mapping corrections.</p>
+          <div class="stats">
+            <div class="stat io"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Inputs</div><div class="v">Customer account information</div></div>
+            <div class="stat io"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Outputs</div><div class="v">Provisioned customer workspace</div></div>
+            <div class="stat"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Duration</div><div class="v mono">34 <small>min</small></div></div>
+            <div class="stat"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg> Wait time</div><div class="v mono">8 <small>min</small></div></div>
+            <div class="stat rework"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg> Rework count</div><div class="v mono">3</div></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="modal-section">
+          <h3 class="mh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> Signals Generated</h3>
+          <div class="msig">
+            <div class="msig-top"><h4>Onboarding instructions were hard to locate</h4><span class="chip chip-amber">Knowledge: Documentation</span></div>
+            <p>Several minutes were spent searching the wiki and shared drive for the current runbook before setup could begin.</p>
+            <div class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> <span><strong>Suggested action:</strong> Pin the latest onboarding runbook to the workspace.</span></div>
+          </div>
+          <div class="msig">
+            <div class="msig-top"><h4>Permission mapping required manual correction</h4><span class="chip chip-purple">Tooling: Configuration</span></div>
+            <p>The default role template applied the wrong access scope, so permissions were re-mapped by hand before provisioning.</p>
+            <div class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> <span><strong>Suggested action:</strong> Validate the permission mapping before beginning CRM setup.</span></div>
+          </div>
+          <div class="msig">
+            <div class="msig-top"><h4>CRM configuration was repeated multiple times</h4><span class="chip chip-indigo">Process Standardization</span></div>
+            <p>The configuration step ran three times because earlier attempts were saved before the mapping was correct.</p>
+            <div class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> <span><strong>Suggested action:</strong> Confirm prerequisites once, then configure CRM in a single pass.</span></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="modal-section">
+          <h3 class="mh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Artifacts</h3>
+          <div class="art-list-modal">
+            <button class="artifact"><span class="art-ico art-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="art-txt"><span class="art-name">Process Documentation</span><span class="art-meta">Markdown · 4 pages · AI-generated</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+            <button class="artifact"><span class="art-ico art-dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M6 9v6a2 2 0 0 0 2 2h7"/></svg></span><span class="art-txt"><span class="art-name">Process Diagram</span><span class="art-meta">6 steps · AI-generated</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+            <button class="artifact"><span class="art-ico art-sum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg></span><span class="art-txt"><span class="art-name">Session Summary</span><span class="art-meta">PDF · 1 page · AI-generated</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const app = document.getElementById('app');
+  const cbarToggle = document.getElementById('cbarToggle');
+  const notifBadge = document.getElementById('notifBadge');
+  let badgeDismissed = false;
+
+  /* ---- companion bar expand / collapse ---- */
+  function setPanel(open){
+    app.classList.toggle('panel-open', open);
+    cbarToggle.setAttribute('aria-expanded', String(open));
+    if (open && notifBadge.classList.contains('visible')) { notifBadge.classList.remove('visible'); badgeDismissed = true; }
+  }
+  cbarToggle.addEventListener('click', ()=> setPanel(!app.classList.contains('panel-open')));
+  document.getElementById('collapseBtn').addEventListener('click', ()=> setPanel(false));
+
+  /* ---- similar section collapse ---- */
+  const similarToggle = document.getElementById('similarToggle');
+  const similarSection = document.getElementById('similarSection');
+  similarToggle.addEventListener('click', ()=>{
+    const collapsed = similarSection.classList.toggle('collapsed');
+    similarToggle.setAttribute('aria-expanded', String(!collapsed));
+  });
+  similarToggle.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); similarToggle.click(); }
+  });
+
+  /* ---- options menu ---- */
+  const menu = document.getElementById('menu');
+  const menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', (e)=>{ e.stopPropagation(); menu.classList.toggle('open'); });
+  document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && !menuBtn.contains(e.target)) menu.classList.remove('open'); });
+
+  /* ---- empty state toggle ---- */
+  const emptyLabel = document.getElementById('emptyLabel');
+  document.getElementById('toggleEmpty').addEventListener('click', ()=>{
+    const on = app.classList.toggle('empty-mode');
+    emptyLabel.textContent = on ? 'Show lessons' : 'Show empty state';
+    menu.classList.remove('open');
+  });
+
+  /* ---- similar process "not relevant" ---- */
+  const similarCard = document.querySelector('.similar');
+  document.getElementById('similarNotrel').addEventListener('click', ()=> similarCard.classList.add('dismissed-match'));
+  document.getElementById('similarUndo').addEventListener('click', ()=> similarCard.classList.remove('dismissed-match'));
+
+  /* ---- "Not relevant" dismiss + undo ---- */
+  document.querySelectorAll('[data-lesson]').forEach(card=>{
+    card.querySelector('.notrel').addEventListener('click', ()=> card.classList.add('dismissed'));
+    card.querySelector('.undo').addEventListener('click', ()=> card.classList.remove('dismissed'));
+  });
+
+  /* ---- View Workflow modal ---- */
+  const overlay = document.getElementById('overlay');
+  function openModal(){ overlay.classList.add('open'); document.getElementById('modalClose').focus(); }
+  function closeModal(){ overlay.classList.remove('open'); }
+  document.getElementById('viewWorkflow').addEventListener('click', openModal);
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+  /* ---- reveal SPF when customer workspace field is filled ---- */
+  let spfRevealed = false;
+  document.getElementById('f-ws').addEventListener('input', (e) => {
+    if (!spfRevealed && e.target.value.trim()) {
+      spfRevealed = true;
+      app.classList.add('spf-visible');
+      setTimeout(() => setPanel(true), 900);
+    }
+  });
+
+  /* ---- notification badge on other CRM field typing ---- */
+  document.querySelectorAll('.control').forEach(el => {
+    el.addEventListener('input', () => {
+      if (!badgeDismissed && !app.classList.contains('panel-open') && app.classList.contains('spf-visible'))
+        notifBadge.classList.add('visible');
+    });
+  });
+</script>
+</body></html>
