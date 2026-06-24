@@ -4,7 +4,7 @@ A process intelligence layer that surfaces relevant context from the organizatio
 
 ## What it is
 
-When a user starts a task in their CRM (e.g., onboarding a new customer), the Companion bar detects a pattern match against their Organizatino's session history and surfaces:
+When a user starts a task in their CRM (e.g., onboarding a new customer), the Companion bar detects a pattern match against their Organization's session history and surfaces:
 
 - The matched prior process with completion time and duration
 - Specific things to watch for, drawn from signals observed in that previous session
