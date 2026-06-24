@@ -1,6 +1,6 @@
 # Klarity Companion
 
-Design prototype and React app for the **Companion Guide: Lessons From Last Time** feature — a personal process intelligence layer that surfaces relevant context from the organization's previous Companion sessions while they work.
+A process intelligence layer that surfaces relevant context from the organization's previous Companion sessions while they work.
 
 ## What it is
 
