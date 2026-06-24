@@ -1,16 +1,14 @@
 # Klarity Companion
 
-Design prototype and React app for the **Companion Guide: Lessons From Last Time** feature — a personal process intelligence layer that surfaces relevant context from a user's own previous Companion sessions while they work.
+Design prototype and React app for the **Companion Guide: Lessons From Last Time** feature — a personal process intelligence layer that surfaces relevant context from the organization's previous Companion sessions while they work.
 
 ## What it is
 
-When a user starts a task in their CRM (e.g., onboarding a new customer), the Companion bar detects a pattern match against their own session history and surfaces:
+When a user starts a task in their CRM (e.g., onboarding a new customer), the Companion bar detects a pattern match against their Organizatino's session history and surfaces:
 
 - The matched prior process with completion time and duration
 - Specific things to watch for, drawn from signals observed in that previous session
 - One-click access to the full prior workflow
-
-**Scope constraint:** This uses only the current user's own historical sessions — no cross-user data, no organizational intelligence, no productivity scoring.
 
 ---
 
